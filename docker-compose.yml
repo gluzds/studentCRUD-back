@@ -1,0 +1,32 @@
+version: '3'
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+  mysql:
+    container_name: 'node-db'
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
+    restart: always
+    ports:
+      - '3306:3306'
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  app:
+    build: .
+    command: yarn start
+    ports:
+      - '3333:3333'
+    networks:
+      - backend
+    volumes:
+      - .:/usr/app
+    depends_on:
+      - mysql
