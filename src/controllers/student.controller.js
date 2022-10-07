@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 exports.getUsers = async (req, res) => {
-  let sqlQuery = "SELECT * FROM students";
+  let sqlQuery = "SELECT * FROM student";
     db.query(sqlQuery, (err, results) => {
       if (err) throw err;
         res.send(results);
@@ -24,7 +24,7 @@ exports.getUsers = async (req, res) => {
 }
 
 exports.getUser = async (req, res) => {
-  let sqlQuery = "SELECT * FROM students WHERE id=" + req.params.id;
+  let sqlQuery = "SELECT * FROM student WHERE id=" + req.params.id;
 
   db.query(sqlQuery, (err, results) => {
     if (err) throw err;
@@ -44,7 +44,7 @@ exports.createUser = async (req, res) => {
       image.id = req.file.filename;
       image.url = `/${image.id}`;
       let data = { name: req.body.name, address: req.body.address, photo: image.url};
-      let sqlQuery = "INSERT INTO students SET ?";
+      let sqlQuery = "INSERT INTO student SET ?";
       db.query(sqlQuery, data, (err, results) => {
         if (err) throw err;
         res.sendStatus(201);
@@ -63,13 +63,13 @@ exports.updateUser = async (req, res) => {
         deleteStudentPhoto(req.params.id);
         image.id = req.file.filename;
         image.url = `/${image.id}`;
-        let sqlQueryWithPhoto = "UPDATE students SET name=\'" + req.body.name + "', address='" + req.body.address + "', photo='" + image.url +  "' WHERE id=" + req.params.id;
+        let sqlQueryWithPhoto = "UPDATE student SET name=\'" + req.body.name + "', address='" + req.body.address + "', photo='" + image.url +  "' WHERE id=" + req.params.id;
         db.query(sqlQueryWithPhoto, (err, results) => {
           if (err) throw err;
           res.sendStatus(201);
         })
         } else {
-        let sqlQueryWithoutPhoto = "UPDATE students SET name=\'" + req.body.name + "', address='" + req.body.address + "' WHERE id=" + req.params.id;
+        let sqlQueryWithoutPhoto = "UPDATE student SET name=\'" + req.body.name + "', address='" + req.body.address + "' WHERE id=" + req.params.id;
         db.query(sqlQueryWithoutPhoto, (err, results) => {
           if (err) throw err;
           res.sendStatus(201);
@@ -80,7 +80,7 @@ exports.updateUser = async (req, res) => {
 }
 
 exports.deleteUser = async (req, res) => {
-  let sqlQueryDelete = "DELETE FROM students WHERE id=" + req.params.id;
+  let sqlQueryDelete = "DELETE FROM student WHERE id=" + req.params.id;
   deleteStudentPhoto(req.params.id);
 
   db.query(sqlQueryDelete, (err, results) => {
@@ -90,7 +90,7 @@ exports.deleteUser = async (req, res) => {
 }
 
 function deleteStudentPhoto(id){
-  let sqlQuerySelect = "SELECT * FROM students WHERE id=" + id;
+  let sqlQuerySelect = "SELECT * FROM student WHERE id=" + id;
 
   db.query(sqlQuerySelect, (err, results) => {
     if (err) throw err;
